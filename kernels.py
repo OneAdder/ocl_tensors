@@ -29,6 +29,14 @@ __kernel void sum(
         int gid = get_global_id(0);
         res[gid] = m1[gid] + m2[gid];
     }}
+
+__kernel void mult(
+    __global const {dtype} *m,
+    const long n,
+    __global {dtype} *res){{
+        int gid = get_global_id(0);
+        res[gid] = m[gid] * n;
+    }}
 '''
 
 def build_kernel(dtype):

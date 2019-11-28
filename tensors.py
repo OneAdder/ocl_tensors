@@ -23,8 +23,24 @@ class Tensor:
     def __str__(self):
         return str(self.to_cpu())
     
-    def __add__(self):
-        pass
+    def __add__(self, tens2):
+        r = np.empty(shape=self.shape).astype(self.dtype)
+        res_g = cl.Buffer(ctx, mf.WRITE_ONLY, r.nbytes)
+        self._kernel.sum(
+            queue, r.shape, None,
+            self._tensor_gpu, tens2._tensor_gpu, res_g,
+        )
+        return Tensor(self.shape, res_g, self.dtype)
+    
+    def __mul__(self, num: int):
+        num = np.int64(num)
+        r = np.empty(shape=self.shape[0]).astype(self.dtype)
+        res_g = cl.Buffer(ctx, mf.WRITE_ONLY, r.nbytes)
+        self._kernel.mult(
+            queue, r.shape, None,
+            self._tensor_gpu, num, res_g,
+        )
+        return Tensor(self.shape, res_g, self.dtype)
     
     def to_cpu(self):
         res = np.empty(shape=self.shape).astype(self.dtype)
