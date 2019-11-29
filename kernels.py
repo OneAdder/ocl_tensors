@@ -19,7 +19,7 @@ __kernel void tensor_product(
     __global {dtype} *res){{
         int i = get_global_id(1); 
         int j = get_global_id(0);
-        res[i + size * j] = m1[j] * m2[i];
+        res[i + size * j] = m1[i] * m2[j];
     }}
 
 __kernel void sum(
